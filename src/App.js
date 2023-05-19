@@ -3,26 +3,31 @@ import Navigation from './components/Navigation/Navigation'
 import Logo from './components/Logo/Logo'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank'
+import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import ParticlesBg from 'particles-bg'
 import './App.css'
 
 function App() {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState(
+    'https://samples.clarifai.com/metro-north.jpg'
+  )
+  const [imageUrl, setImageUrl] = useState('')
 
   const onInputChange = (e) => {
-    console.log(e.target.value)
+    setInput(e.target.value)
   }
 
   const onButtonSubmit = () => {
+    setImageUrl(input)
     // Your PAT (Personal Access Token) can be found in the portal under Authentification
-    const PAT = 'YOUR_PAT_HERE'
+    const PAT = 'afc12b6105524d72ab52eb621ff5fbf2'
     // Specify the correct user_id/app_id pairings
     // Since you're making inferences outside your app's scope
     const USER_ID = 'clarifai'
     const APP_ID = 'main'
     // Change these to whatever model and image URL you want to use
-    const MODEL_ID = 'general-image-recognition'
-    const MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40'
+    const MODEL_ID = 'face-detection'
+    const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105'
     const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg'
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +43,7 @@ function App() {
         {
           data: {
             image: {
-              url: IMAGE_URL,
+              url: input,
             },
           },
         },
@@ -66,8 +71,10 @@ function App() {
         '/outputs',
       requestOptions
     )
-      .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((response) => response.json())
+      .then((result) =>
+        console.log(result.outputs[0].data.regions[0].region_info.bounding_box)
+      )
       .catch((error) => console.log('error', error))
   }
 
@@ -81,7 +88,7 @@ function App() {
         onInputChange={onInputChange}
         onButtonSubmit={onButtonSubmit}
       />
-      {/*<FaceRecognition /> */}
+      <FaceRecognition imageUrl={imageUrl} />
     </div>
   )
 }
