@@ -14,6 +14,7 @@ function App() {
     imageUrl: '',
     box: {},
     route: 'signin',
+    isSignedIn: false,
   })
 
   const calculateFaceLocation = (result) => {
@@ -32,7 +33,6 @@ function App() {
   }
 
   const displayFaceBox = (box) => {
-    console.log(box)
     setState({ ...state, box: box })
   }
 
@@ -101,14 +101,22 @@ function App() {
   }
 
   const onRouteChange = (route) => {
-    setState({ ...state, route: route })
+    let isSignedIn = false
+    if (route === 'signout') {
+      isSignedIn = false
+    } else if (route === 'home') {
+      isSignedIn = true
+    }
+    setState({ ...state, route: route, isSignedIn: isSignedIn })
   }
+
+  const { isSignedIn, imageUrl, route, box } = state
 
   return (
     <div className="App">
       <ParticlesBg type="cobweb" bg={true} />
-      <Navigation onRouteChange={onRouteChange} />
-      {state.route === 'home' ? (
+      <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
+      {route === 'home' ? (
         <>
           <Logo />
           <Rank />
@@ -116,9 +124,9 @@ function App() {
             onInputChange={onInputChange}
             onButtonSubmit={onButtonSubmit}
           />
-          <FaceRecognition box={state.box} imageUrl={state.imageUrl} />
+          <FaceRecognition box={box} imageUrl={imageUrl} />
         </>
-      ) : state.route === 'signin' ? (
+      ) : route === 'signin' ? (
         <SignIn onRouteChange={onRouteChange} />
       ) : (
         <Register onRouteChange={onRouteChange} />
