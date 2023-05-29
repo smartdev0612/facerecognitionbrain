@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navigation from './components/Navigation/Navigation'
 import Logo from './components/Logo/Logo'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
@@ -16,6 +16,12 @@ function App() {
     route: 'signin',
     isSignedIn: false,
   })
+
+  useEffect(() => {
+    fetch('http://localhost:3005')
+      .then((res) => res.json())
+      .then(console.log)
+  }, [])
 
   const calculateFaceLocation = (result) => {
     const clarifaiFace =
