@@ -10,18 +10,34 @@ import ParticlesBg from 'particles-bg'
 import './App.css'
 
 function App() {
-  const [state, setState] = useState({
-    imageUrl: '',
-    box: {},
-    route: 'signin',
-    isSignedIn: false,
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: '',
   })
+  const [imageUrl, setImageUrl] = useState('')
+  const [box, setBox] = useState({})
+  const [route, setRoute] = useState('')
+  const [isSignedIn, setIsSignedIn] = useState(false)
 
   useEffect(() => {
     fetch('http://localhost:3005')
       .then((res) => res.json())
       .then(console.log)
   }, [])
+
+  const loadUser = (data) => {
+    setUser({
+      ...user,
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined,
+    })
+  }
 
   const calculateFaceLocation = (result) => {
     const clarifaiFace =
@@ -39,15 +55,15 @@ function App() {
   }
 
   const displayFaceBox = (box) => {
-    setState({ ...state, box: box })
+    setBox(box)
   }
 
   const onInputChange = (e) => {
-    setState({ ...state, imageUrl: e.target.value })
+    setImageUrl(e.target.value)
   }
 
-  const onButtonSubmit = () => {
-    if (state.imageUrl) {
+  const onPictureSubmit = () => {
+    if (imageUrl) {
       // Your PAT (Personal Access Token) can be found in the portal under Authentification
       const PAT = 'afc12b6105524d72ab52eb621ff5fbf2'
       // Specify the correct user_id/app_id pairings
@@ -72,7 +88,7 @@ function App() {
           {
             data: {
               image: {
-                url: state.imageUrl,
+                url: imageUrl,
               },
             },
           },
@@ -101,22 +117,38 @@ function App() {
         requestOptions
       )
         .then((response) => response.json())
-        .then((result) => displayFaceBox(calculateFaceLocation(result)))
+        .then((result) => {
+          if (result) {
+            fetch('http://localhost:3005/image', {
+              method: 'put',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: user.id,
+              }),
+            })
+              .then((response) => response.json())
+              .then((count) => {
+                setUser({ ...user, entries: count })
+              })
+          }
+          displayFaceBox(calculateFaceLocation(result))
+        })
         .catch((error) => console.log('error', error))
     }
   }
 
   const onRouteChange = (route) => {
-    let isSignedIn = false
+    let signInStatus = false
     if (route === 'signout') {
-      isSignedIn = false
+      signInStatus = false
     } else if (route === 'home') {
-      isSignedIn = true
+      signInStatus = true
     }
-    setState({ ...state, route: route, isSignedIn: isSignedIn })
+    setRoute(route)
+    setIsSignedIn(signInStatus)
   }
-
-  const { isSignedIn, imageUrl, route, box } = state
 
   return (
     <div className="App">
@@ -125,17 +157,17 @@ function App() {
       {route === 'home' ? (
         <>
           <Logo />
-          <Rank />
+          <Rank name={user.name} entries={user.entries} />
           <ImageLinkForm
             onInputChange={onInputChange}
-            onButtonSubmit={onButtonSubmit}
+            onPictureSubmit={onPictureSubmit}
           />
           <FaceRecognition box={box} imageUrl={imageUrl} />
         </>
       ) : route === 'signin' ? (
-        <SignIn onRouteChange={onRouteChange} />
+        <SignIn onRouteChange={onRouteChange} loadUser={loadUser} />
       ) : (
-        <Register onRouteChange={onRouteChange} />
+        <Register onRouteChange={onRouteChange} loadUser={loadUser} />
       )}
     </div>
   )
