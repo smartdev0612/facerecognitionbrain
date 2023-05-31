@@ -28,6 +28,7 @@ function App() {
       .then(console.log)
   }, [])
 
+  // Load User Info
   const loadUser = (data) => {
     setUser({
       ...user,
