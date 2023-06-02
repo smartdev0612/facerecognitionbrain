@@ -43,7 +43,7 @@ function App() {
   const calculateFaceLocation = (result) => {
     const clarifaiFace =
       result.outputs[0].data.regions[0].region_info.bounding_box
-    console.log(clarifaiFace)
+    // console.log(clarifaiFace)
     const image = document.getElementById('inputImage')
     const width = Number(image.width)
     const height = Number(image.height)
