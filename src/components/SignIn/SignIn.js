@@ -6,12 +6,10 @@ const SignIn = ({ onRouteChange, loadUser }) => {
     signInPassword: '',
   })
 
-  const onEmailChange = (e) => {
-    setState({ ...state, signInEmail: e.target.value })
-  }
-
-  const onPasswordChange = (e) => {
-    setState({ ...state, signInPassword: e.target.value })
+  const handleChange = (e) => {
+    const value = e.target.value
+    const name = e.target.name
+    setState({ ...state, [name]: value })
   }
 
   const onSubmitSignIn = (e) => {
@@ -41,27 +39,27 @@ const SignIn = ({ onRouteChange, loadUser }) => {
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f1 fw6 ph0 mh0">Sign In</legend>
             <div className="mt3">
-              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+              <label className="db fw6 lh-copy f6" htmlFor="signInEmail">
                 Email
               </label>
               <input
                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
-                name="email-address"
-                id="email-address"
-                onChange={onEmailChange}
+                name="signInEmail"
+                id="signInEmail"
+                onChange={handleChange}
               />
             </div>
             <div className="mv3">
-              <label className="db fw6 lh-copy f6" htmlFor="password">
+              <label className="db fw6 lh-copy f6" htmlFor="signInPassword">
                 Password
               </label>
               <input
                 className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="password"
-                name="password"
-                id="password"
-                onChange={onPasswordChange}
+                name="signInPassword"
+                id="signInPassword"
+                onChange={handleChange}
               />
             </div>
           </fieldset>

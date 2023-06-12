@@ -19,7 +19,7 @@ function App() {
   })
   const [imageUrl, setImageUrl] = useState('')
   const [box, setBox] = useState({})
-  const [route, setRoute] = useState('')
+  const [route, setRoute] = useState('signin')
   const [isSignedIn, setIsSignedIn] = useState(false)
 
   useEffect(() => {
@@ -27,6 +27,20 @@ function App() {
       .then((res) => res.json())
       .then(console.log)
   }, [])
+
+  const initialState = () => {
+    setUser({
+      id: '',
+      name: '',
+      email: '',
+      entries: 0,
+      joined: '',
+    })
+    setImageUrl('')
+    setBox({})
+    setRoute('signin')
+    setIsSignedIn(false)
+  }
 
   // Load User Info
   const loadUser = (data) => {
@@ -141,14 +155,12 @@ function App() {
   }
 
   const onRouteChange = (route) => {
-    let signInStatus = false
     if (route === 'signout') {
-      signInStatus = false
+      initialState()
     } else if (route === 'home') {
-      signInStatus = true
+      setIsSignedIn(true)
     }
     setRoute(route)
-    setIsSignedIn(signInStatus)
   }
 
   return (
