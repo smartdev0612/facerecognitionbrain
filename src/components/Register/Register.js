@@ -7,16 +7,10 @@ const Register = ({ onRouteChange, loadUser }) => {
     name: '',
   })
 
-  const onNameChange = (e) => {
-    setState({ ...state, name: e.target.value })
-  }
-
-  const onEmailChange = (e) => {
-    setState({ ...state, email: e.target.value })
-  }
-
-  const onPasswordChange = (e) => {
-    setState({ ...state, password: e.target.value })
+  const handleChange = (e) => {
+    const value = e.target.value
+    const name = e.target.name
+    setState({ ...state, [name]: value })
   }
 
   const onSubmitRegister = (e) => {
@@ -55,7 +49,7 @@ const Register = ({ onRouteChange, loadUser }) => {
                 type="text"
                 name="name"
                 id="name"
-                onChange={onNameChange}
+                onChange={handleChange}
               />
             </div>
             <div className="mt3">
@@ -67,7 +61,7 @@ const Register = ({ onRouteChange, loadUser }) => {
                 type="email"
                 name="email-address"
                 id="email-address"
-                onChange={onEmailChange}
+                onChange={handleChange}
               />
             </div>
             <div className="mv3">
@@ -79,7 +73,7 @@ const Register = ({ onRouteChange, loadUser }) => {
                 type="password"
                 name="password"
                 id="password"
-                onChange={onPasswordChange}
+                onChange={handleChange}
               />
             </div>
           </fieldset>
